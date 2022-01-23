@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,29 +11,43 @@ namespace Infrastructure.Repositories
 {
     public class NoteRepository : INoteRepository
     {
-        public void AddNewNote(Note note)
+        private readonly ToDoDBContext _context;
+
+        public NoteRepository(ToDoDBContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public void AddNewNote(Note note, int id)
+        {
+            note.UserId = id;
+            note.Created = DateTime.UtcNow;
+            note.LastModified = DateTime.UtcNow;
+            _context.Notes.Add(note);
+            _context.SaveChanges();
         }
 
         public void DeleteNote(Note note)
         {
-            throw new NotImplementedException();
+            _context.Notes.Remove(note);
+            _context.SaveChanges();
         }
 
-        public IEnumerable<Note> GetAllNotes()
+        public IEnumerable<Note> GetAllNotes(int userId)
         {
-            throw new NotImplementedException();
+            return _context.Notes.ToList().Where(x => x.UserId == userId);
         }
 
         public Note GetNoteById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Notes.FirstOrDefault(x => x.Id == id);
         }
 
         public void Update(Note note)
         {
-            throw new NotImplementedException();
+            note.LastModified = DateTime.UtcNow;
+            _context.Notes.Update(note);
+            _context.SaveChanges();
         }
+
     }
 }

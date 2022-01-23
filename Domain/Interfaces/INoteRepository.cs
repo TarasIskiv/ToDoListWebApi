@@ -9,9 +9,9 @@ namespace Domain.Interfaces
 {
     public interface INoteRepository
     {
-        public void AddNewNote(Note note);
+        public void AddNewNote(Note note, int id);
         public void DeleteNote(Note note);
-        public IEnumerable<Note> GetAllNotes();
+        public IEnumerable<Note> GetAllNotes(int userId);
         public Note GetNoteById(int id);
         public void Update(Note note);
 
