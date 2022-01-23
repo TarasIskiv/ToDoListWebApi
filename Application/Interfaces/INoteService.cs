@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    interface INoteService
+    public interface INoteService
     {
         public IEnumerable<NoteDto> GetAll(int id);
 

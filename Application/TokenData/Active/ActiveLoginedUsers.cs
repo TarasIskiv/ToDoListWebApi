@@ -8,7 +8,7 @@ namespace Application.TokenData.Active
 {
     public class ActiveLoginedUsers
     {
-        private static List<LoginedUser> AllActiveUsers {get;set;}
+        private static readonly ISet<LoginedUser> AllActiveUsers = new HashSet<LoginedUser>();
 
         public void addUser(LoginedUser user)
         {

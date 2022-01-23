@@ -1,5 +1,10 @@
+using Application.Interfaces;
+using Application.Mapping;
+using Application.Services;
 using Application.TokenData.JWT;
+using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -61,6 +66,13 @@ namespace ToDoList
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<INoteRepository, NoteRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<INoteService, NoteService>();
+
+            services.AddSingleton(AutoMapperConfiguration.Initialize());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
