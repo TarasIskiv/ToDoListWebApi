@@ -10,5 +10,7 @@ namespace Domain.Interfaces
     public interface IUserRepository
     {
         public void Add(User user);
+
+        public IEnumerable<User> GetAll();
     }
 }

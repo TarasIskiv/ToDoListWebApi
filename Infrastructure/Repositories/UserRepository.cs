@@ -22,5 +22,10 @@ namespace Infrastructure.Repositories
             _context.Users.Add(user);
             _context.SaveChanges();
         }
+
+        public IEnumerable<User> GetAll()
+        {
+            return _context.Users;
+        }
     }
 }
