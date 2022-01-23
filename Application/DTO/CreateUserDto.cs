@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.DTO
 {
-    public class UserDto
+    public class CreateUserDto
     {
-        public int Id { get; set; }
         public string Login { get; set; }
 
         public string Password { get; set; }
-
     }
 }

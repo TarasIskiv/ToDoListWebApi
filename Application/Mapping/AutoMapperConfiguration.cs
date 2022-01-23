@@ -19,6 +19,7 @@ namespace Application.Mapping
                 cfg.CreateMap<Note, NoteDto>();
                 cfg.CreateMap<CreateNoteDto, Note>();
                 cfg.CreateMap<UpdateNoteDto, Note>();
+                cfg.CreateMap<CreateUserDto, User>();
             }).CreateMapper();
         }
     }

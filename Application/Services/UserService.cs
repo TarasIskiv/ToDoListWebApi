@@ -21,7 +21,7 @@ namespace Application.Services
             _mapper = mapper;
             _userRepository = userRepository;
         }
-        public void Create(UserDto dto)
+        public void Create(CreateUserDto dto)
         {
             var user = _mapper.Map<User>(dto);
             _userRepository.Add(user);

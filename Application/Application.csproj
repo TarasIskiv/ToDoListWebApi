@@ -13,9 +13,4 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TokenData\JWT\" />
-    <Folder Include="TokenData\Active\" />
-  </ItemGroup>
-
 </Project>
