@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.Mapping;
+using Application.Middlewares;
 using Application.Services;
 using Application.TokenData.JWT;
 using Domain.Interfaces;
@@ -34,7 +35,6 @@ namespace ToDoList
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ToDoDBContext>(options =>
@@ -74,14 +74,17 @@ namespace ToDoList
 
             services.AddSingleton(AutoMapperConfiguration.Initialize());
 
+
+            services.AddScoped<ErrorHandlerMiddleware>();
+
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDoList", Version = "v1" });
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -90,6 +93,8 @@ namespace ToDoList
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDoList v1"));
             }
+
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseRouting();
