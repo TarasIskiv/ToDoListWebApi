@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Application.Errors;
+using Application.Exceptions;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +17,15 @@ namespace Application.Middlewares
             {
                 await next.Invoke(context);
             }
-            catch(Exception ex)
+            catch(TokenException token)
+            {
+                await context.Response.WriteAsync(token.Message);
+            }
+            catch(NoteException note)
+            {
+                await context.Response.WriteAsync(note.Message);
+            }
+            catch (Exception ex)
             {
                 await context.Response.WriteAsync(ex.Message);
             }

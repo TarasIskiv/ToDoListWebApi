@@ -1,4 +1,6 @@
 ﻿using Application.DTO;
+using Application.Errors;
+using Application.Exceptions;
 using Application.TokenData.Active;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ namespace Application.Validations
 
             if (user == null)
             {
-                throw new Exception();
+                throw new TokenException("Your Token is not valid");
             }
 
             return user.Id;
@@ -29,7 +31,7 @@ namespace Application.Validations
             var note = dto.ToList().Where(x => x.Id == id).FirstOrDefault();
             if (note == null)
             {
-                throw new Exception();
+                throw new NoteException("Bad Note unique id");
             }
         }
     }
