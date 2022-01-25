@@ -44,8 +44,15 @@ namespace Infrastructure.Repositories
 
         public void Update(Note note)
         {
-            note.LastModified = DateTime.UtcNow;
-            _context.Notes.Update(note);
+            var currentNote = _context.Notes.ToList().Where(x => x.Id == note.Id).SingleOrDefault();
+            if(currentNote == null)
+            {
+                throw new Exception("Not Found");
+            }
+
+            currentNote.Content = note.Content;
+            currentNote.LastModified = DateTime.UtcNow;
+            //_context.Notes.Update(note);
             _context.SaveChanges();
         }
 

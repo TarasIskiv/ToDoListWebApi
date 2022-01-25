@@ -24,15 +24,15 @@ namespace ToDoList.Controllers
         }
         
         
-        [HttpPost("add/")]
-        public ActionResult AddNewNote([FromBody] JObject stuff)
+        [HttpPost("add")]
+        public ActionResult AddNewNote([FromHeader] string token, [FromBody] CreateNoteDto noteDto)
         {
-            var token = stuff["token"].ToObject<Token>();
-            var noteDto = stuff["note"].ToObject<CreateNoteDto>();
+            //var token = dto.Token;
+            //var noteDto = dto.note;
             var currentLoginedUsers = new ActiveLoginedUsers();
-            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token.token).FirstOrDefault();
+            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token).FirstOrDefault();
 
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -89,7 +89,7 @@ namespace ToDoList.Controllers
                 return NotFound();
             }
 
-            var note = _noteService.GetAll(user.Id).ToList().Where(x => x.Id == id);
+            var note = _noteService.GetAll(user.Id).ToList().Where(x => x.Id == id).FirstOrDefault();
             if(note == null)
             {
                 return NotFound();
@@ -99,9 +99,26 @@ namespace ToDoList.Controllers
         }
 
           
+        //change
         [HttpPut("update")]
-        public ActionResult UpdateNote([FromBody] UpdateNoteDto noteDto)
+        public ActionResult UpdateNote([FromHeader] string token,[FromBody] UpdateNoteDto noteDto)
         {
+            var currentLoginedUsers = new ActiveLoginedUsers();
+            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token).FirstOrDefault();
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var note = _noteService.GetAll(user.Id).ToList().Where(x => x.Id == noteDto.Id).FirstOrDefault();
+            if(note == null)
+            {
+                return NotFound();
+            }
+
+
+
             _noteService.Update(noteDto);
             return Ok();
         }
