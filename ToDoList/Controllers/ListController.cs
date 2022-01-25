@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.TokenData.Active;
 using Application.TokenData.JWT;
+using Application.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -27,36 +28,18 @@ namespace ToDoList.Controllers
         [HttpPost("add")]
         public ActionResult AddNewNote([FromHeader] string token, [FromBody] CreateNoteDto noteDto)
         {
-            //var token = dto.Token;
-            //var noteDto = dto.note;
-            var currentLoginedUsers = new ActiveLoginedUsers();
-            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token).FirstOrDefault();
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _noteService.Create(noteDto, user.Id);
+            var userId = token.UserTokenValidation();
+            _noteService.Create(noteDto, userId);
             return Ok();
         }
 
         [HttpDelete("remove/{id}")]
         public ActionResult DeleteNote([FromHeader] string token,[FromRoute] int id)
         {
-            var currentLoginedUsers = new ActiveLoginedUsers();
-            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token).FirstOrDefault();
+            var userId = token.UserTokenValidation();
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var note = _noteService.GetAll(user.Id).ToList().Where(x => x.Id == id);
-            if(note == null)
-            {
-                return NotFound();
-            }
+            var allNotesInUser = _noteService.GetAll(userId);
+            allNotesInUser.NoteValidation(id);
 
             _noteService.Delete(id);
             return Ok();
@@ -65,15 +48,8 @@ namespace ToDoList.Controllers
         [HttpGet("all")]
         public ActionResult<IEnumerable<NoteDto>> GetAllNotes([FromHeader] string token)
         {
-            var currentLoginedUsers = new ActiveLoginedUsers();
-            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token).FirstOrDefault();
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var notes = _noteService.GetAll(user.Id).ToList();
+            var userId = token.UserTokenValidation();
+            var notes = _noteService.GetAll(userId).ToList();
             return Ok(notes);
         }
 
@@ -81,43 +57,22 @@ namespace ToDoList.Controllers
         [HttpGet("{id}")]
         public ActionResult<NoteDto> GetNoteById([FromHeader] string token, [FromRoute] int id)
         {
-            var currentLoginedUsers = new ActiveLoginedUsers();
-            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token).FirstOrDefault();
+            var userId = token.UserTokenValidation();
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var note = _noteService.GetAll(user.Id).ToList().Where(x => x.Id == id).FirstOrDefault();
-            if(note == null)
-            {
-                return NotFound();
-            }
+            var allNotesInUser = _noteService.GetAll(userId);
+            allNotesInUser.NoteValidation(id);
 
             return Ok(_noteService.GetById(id));
         }
 
           
-        //change
         [HttpPut("update")]
         public ActionResult UpdateNote([FromHeader] string token,[FromBody] UpdateNoteDto noteDto)
         {
-            var currentLoginedUsers = new ActiveLoginedUsers();
-            var user = currentLoginedUsers.GetAllLoginedUsers().ToList().Where(x => x.Token == token).FirstOrDefault();
+            var userId = token.UserTokenValidation();
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var note = _noteService.GetAll(user.Id).ToList().Where(x => x.Id == noteDto.Id).FirstOrDefault();
-            if(note == null)
-            {
-                return NotFound();
-            }
-
-
+            var allNotesInUser = _noteService.GetAll(userId);
+            allNotesInUser.NoteValidation(noteDto.Id);
 
             _noteService.Update(noteDto);
             return Ok();
